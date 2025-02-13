@@ -1,6 +1,8 @@
 package com.management.SMS.service.impl;
 
 import com.management.SMS.entity.Student;
+import com.management.SMS.exception.ResourceNotFoundException;
+import com.management.SMS.exception.StudentNotFoundException;
 import com.management.SMS.repository.StudentRepository;
 import com.management.SMS.service.StudentService;
 import jakarta.transaction.Transactional;
@@ -33,7 +35,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student getStudentById(Long id) {
-        return studentRepository.findById(id).get();
+        return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException("Student with "+ id + "not found"));
     }
 
     @Override
@@ -43,6 +45,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteStudentById(Long id) {
+        if (!studentRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Student with ID " + id + " not found.");
+        }
         studentRepository.deleteById(id);
     }
 

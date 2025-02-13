@@ -1,6 +1,5 @@
 package com.management.SMS.entity;
 
-
 import jakarta.persistence.*;
 
 @Entity

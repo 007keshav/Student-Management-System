@@ -1,6 +1,7 @@
 package com.management.SMS.controller;
 
 import com.management.SMS.entity.Student;
+import com.management.SMS.exception.StudentNotFoundException;
 import org.springframework.ui.Model;
 import com.management.SMS.service.StudentService;
 import org.springframework.stereotype.Controller;
@@ -51,6 +52,18 @@ public class StudentController {
         return "redirect:/students";
     }
 
+    @GetMapping("/students/{id}")
+    public String getStudentById(@PathVariable Long id, Model model) {
+        try {
+            Student student = studentService.getStudentById(id);
+            model.addAttribute("student", student);
+            return "student-detail"; // Name of the HTML page
+        } catch (StudentNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error/student-not-found"; // Custom error page
+        }
+    }
+
     @GetMapping("/students/edit/{id}")
     public String editStudentForm(@PathVariable Long id, Model model){
         model.addAttribute("student", studentService.getStudentById(id));
@@ -74,9 +87,18 @@ public class StudentController {
 
     //handler method to delete student object
     @GetMapping("/students/{id}")
-    public String deleteStudent(@PathVariable Long id){
-        studentService.deleteStudentById(id);
-        return "redirect:/students";
+    public String deleteStudent(@PathVariable Long id) {
+        try {
+            studentService.deleteStudentById(id); // Attempt to delete the student
+            return "redirect:/students"; // Redirect on successful deletion
+        } catch (StudentNotFoundException e) {
+            // Handle case when the student with the given ID does not exist
+            return "error/student-not-found"; // Redirect to a custom error page or return an error view
+        } catch (Exception e) {
+            // Handle any other unexpected exceptions
+            return "error/general-error"; // Redirect to a generic error page or return an error view
+        }
     }
+
 
 }
