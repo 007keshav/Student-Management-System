@@ -89,14 +89,13 @@ public class StudentController {
     @GetMapping("/students/{id}")
     public String deleteStudent(@PathVariable Long id) {
         try {
-            studentService.deleteStudentById(id); // Attempt to delete the student
-            return "redirect:/students"; // Redirect on successful deletion
+            studentService.deleteStudentById(id); 
+            return "redirect:/students"; 
         } catch (StudentNotFoundException e) {
-            // Handle case when the student with the given ID does not exist
-            return "error/student-not-found"; // Redirect to a custom error page or return an error view
+        
+            return "error/student-not-found"; 
         } catch (Exception e) {
-            // Handle any other unexpected exceptions
-            return "error/general-error"; // Redirect to a generic error page or return an error view
+            return "error/general-error"; 
         }
     }
 
